@@ -68,6 +68,7 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
   private String tag;
   private Call call;
   private boolean isCancelled = false;
+  private int currentProgress;
 
   private Context context;
 
@@ -108,6 +109,7 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
 
   @NonNull
   public Result doWorkInternal() {
+    currentProgress = 0;
     String url = getInputData().getString(ARG_URL);
     String method = getInputData().getString(ARG_METHOD);
     int timeout = getInputData().getInt(ARG_REQUEST_TIMEOUT, 3600);
@@ -471,18 +473,22 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
     double p = ((double) bytesWritten / (double) contentLength) * 100;
     int progress = (int) Math.round(p);
 
-    Log.d(
-        TAG,
-        "taskId: "
-            + getId().toString()
-            + ", bytesWritten: "
-            + bytesWritten
-            + ", contentLength: "
-            + contentLength
-            + ", progress: "
-            + progress);
+    if(currentProgress != progress) {
+      currentProgress = progress;
 
-    sendUpdateProcessEvent(context, UploadStatus.RUNNING, progress);
+      Log.d(
+              TAG,
+              "taskId: "
+                      + getId().toString()
+                      + ", bytesWritten: "
+                      + bytesWritten
+                      + ", contentLength: "
+                      + contentLength
+                      + ", progress: "
+                      + progress);
+
+      sendUpdateProcessEvent(context, UploadStatus.RUNNING, progress);
+    }
   }
 
   @Override
