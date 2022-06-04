@@ -91,6 +91,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     List<Map<String, String>> files = call.argument("files");
     Map<String, String> parameters = call.argument("data");
     Map<String, String> headers = call.argument("headers");
+    String dataContentType = call.argument("dataContentType");
     String tag = call.argument("tag");
     Boolean allowCellular = call.argument("allowCellular");
     if (allowCellular == null) {
@@ -125,12 +126,14 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
                 method,
                 items,
                 headers,
+                dataContentType,
                 parameters,
                 connectionTimeout,
                 false,
                 tag,
                 allowCellular));
 
+    WorkManager.getInstance(context).pruneWork();
     WorkManager.getInstance(context)
         .enqueue(request)
         .getResult()
@@ -151,6 +154,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     String method = call.argument("method");
     String path = call.argument("path");
     Map<String, String> headers = call.argument("headers");
+    String dataContentType = call.argument("dataContentType");
     String tag = call.argument("tag");
     Boolean allowCellular = call.argument("allowCellular");
 
@@ -180,6 +184,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
                 method,
                 Collections.singletonList(new FileItem(path)),
                 headers,
+                dataContentType,
                 Collections.emptyMap(),
                 connectionTimeout,
                 true,
@@ -237,7 +242,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
             .putString(UploadWorker.ARG_METHOD, task.getMethod())
             .putInt(UploadWorker.ARG_REQUEST_TIMEOUT, task.getTimeout())
             .putBoolean(UploadWorker.ARG_BINARY_UPLOAD, task.isBinaryUpload())
-            .putString(UploadWorker.ARG_UPLOAD_REQUEST_TAG, task.getTag());
+            .putString(UploadWorker.ARG_UPLOAD_REQUEST_TAG, task.getTag())
+            .putString(UploadWorker.ARG_DATA_CONTENT_TYPE, task.getDataContentType());
 
     List<FileItem> files = task.getFiles();
 

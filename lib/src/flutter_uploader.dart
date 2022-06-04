@@ -105,6 +105,7 @@ class FlutterUploader {
         'method': describeEnum(upload.method),
         'files': (upload.files ?? []).map((e) => e.toJson()).toList(),
         'headers': upload.headers,
+        'dataContentType': upload.contentType,
         'data': upload.data,
         'tag': upload.tag,
         'allowCellular': upload.allowCellular,

@@ -45,6 +45,7 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
   public static final String ARG_URL = "url";
   public static final String ARG_METHOD = "method";
   public static final String ARG_HEADERS = "headers";
+  public static final String ARG_DATA_CONTENT_TYPE = "contentType";
   public static final String ARG_DATA = "data";
   public static final String ARG_FILES = "files";
   public static final String ARG_REQUEST_TIMEOUT = "requestTimeout";
@@ -112,6 +113,7 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
     int timeout = getInputData().getInt(ARG_REQUEST_TIMEOUT, 3600);
     boolean isBinaryUpload = getInputData().getBoolean(ARG_BINARY_UPLOAD, false);
     String headersJson = getInputData().getString(ARG_HEADERS);
+    String dataContentType = getInputData().getString(ARG_DATA_CONTENT_TYPE);
     String parametersJson = getInputData().getString(ARG_DATA);
     String filesJson = getInputData().getString(ARG_FILES);
     tag = getInputData().getString(ARG_UPLOAD_REQUEST_TAG);
@@ -162,7 +164,7 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
         MediaType contentType = MediaType.parse(mimeType);
         innerRequestBody = RequestBody.create(file, contentType);
       } else {
-        MultipartBody.Builder formRequestBuilder = prepareRequest(parameters, null);
+        MultipartBody.Builder formRequestBuilder = prepareRequest(parameters, dataContentType,null);
         int fileExistsCount = 0;
         for (FileItem item : files) {
           File file = new File(item.getPath());
@@ -415,7 +417,7 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
     return type;
   }
 
-  private MultipartBody.Builder prepareRequest(Map<String, String> parameters, String boundary) {
+  private MultipartBody.Builder prepareRequest(Map<String, String> parameters, String contentType, String boundary) {
 
     MultipartBody.Builder requestBodyBuilder =
         boundary != null && !boundary.isEmpty()
@@ -429,7 +431,15 @@ public class UploadWorker extends ListenableWorker implements CountProgressListe
     for (String key : parameters.keySet()) {
       String parameter = parameters.get(key);
       if (parameter != null) {
-        requestBodyBuilder.addFormDataPart(key, parameter);
+        if(contentType != null){
+          requestBodyBuilder.addFormDataPart(
+                  key,
+                  null,
+                  RequestBody.create(parameter.getBytes(), MediaType.parse(contentType))
+          );
+        } else {
+          requestBodyBuilder.addFormDataPart(key, parameter);
+        }
       }
     }
 

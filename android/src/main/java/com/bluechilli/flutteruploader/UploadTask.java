@@ -9,6 +9,7 @@ public class UploadTask {
   private String url;
   private String method;
   private Map<String, String> headers;
+  private String dataContentType;
   private Map<String, String> data;
   private List<FileItem> files;
   private int requestTimeoutInSeconds;
@@ -21,6 +22,7 @@ public class UploadTask {
       String method,
       List<FileItem> files,
       Map<String, String> headers,
+      String dataContentType,
       Map<String, String> data,
       int requestTimeoutInSeconds,
       boolean binaryUpload,
@@ -30,6 +32,7 @@ public class UploadTask {
     this.method = method;
     this.files = files;
     this.headers = headers;
+    this.dataContentType = dataContentType;
     this.data = data;
     this.requestTimeoutInSeconds = requestTimeoutInSeconds;
     this.binaryUpload = binaryUpload;
@@ -55,6 +58,10 @@ public class UploadTask {
 
   public Map<String, String> getHeaders() {
     return headers;
+  }
+
+  public String getDataContentType() {
+    return dataContentType;
   }
 
   public Map<String, String> getParameters() {

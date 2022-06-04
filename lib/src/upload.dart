@@ -8,6 +8,7 @@ abstract class Upload {
     required this.url,
     required this.method,
     this.headers = const <String, String>{},
+    this.contentType,
     this.tag,
     this.allowCellular = true,
   });
@@ -20,6 +21,9 @@ abstract class Upload {
 
   /// HTTP headers.
   final Map<String, String>? headers;
+
+  /// Data contentType
+  final String? contentType;
 
   /// Name of the upload request (only used on Android)
   final String? tag;
@@ -38,6 +42,7 @@ class MultipartFormDataUpload extends Upload {
     required String url,
     UploadMethod method = UploadMethod.POST,
     Map<String, String>? headers,
+    String? contentType,
     String? tag,
     this.files,
     this.data,
@@ -47,6 +52,7 @@ class MultipartFormDataUpload extends Upload {
           url: url,
           method: method,
           headers: headers,
+          contentType: contentType,
           tag: tag,
           allowCellular: allowCellular,
         ) {
