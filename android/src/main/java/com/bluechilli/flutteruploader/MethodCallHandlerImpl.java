@@ -94,6 +94,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     String dataContentType = call.argument("dataContentType");
     String tag = call.argument("tag");
     Boolean allowCellular = call.argument("allowCellular");
+    int progressDivision = call.argument("progressDivision");
     if (allowCellular == null) {
       result.error("invalid_flag", "allowCellular must be set", null);
       return;
@@ -131,7 +132,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
                 connectionTimeout,
                 false,
                 tag,
-                allowCellular));
+                allowCellular,
+                progressDivision));
 
     WorkManager.getInstance(context).pruneWork();
     WorkManager.getInstance(context)
@@ -157,6 +159,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     String dataContentType = call.argument("dataContentType");
     String tag = call.argument("tag");
     Boolean allowCellular = call.argument("allowCellular");
+    int progressDivision = call.argument("progressDivision");
+
 
     if (allowCellular == null) {
       result.error("invalid_flag", "allowCellular must be set", null);
@@ -189,7 +193,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
                 connectionTimeout,
                 true,
                 tag,
-                allowCellular));
+                allowCellular,
+                progressDivision));
 
     WorkManager.getInstance(context)
         .enqueue(request)
@@ -243,7 +248,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
             .putInt(UploadWorker.ARG_REQUEST_TIMEOUT, task.getTimeout())
             .putBoolean(UploadWorker.ARG_BINARY_UPLOAD, task.isBinaryUpload())
             .putString(UploadWorker.ARG_UPLOAD_REQUEST_TAG, task.getTag())
-            .putString(UploadWorker.ARG_DATA_CONTENT_TYPE, task.getDataContentType());
+            .putString(UploadWorker.ARG_DATA_CONTENT_TYPE, task.getDataContentType())
+            .putInt(UploadWorker.ARG_PROGRESS_DEV, task.getProgressDivision());
 
     List<FileItem> files = task.getFiles();
 

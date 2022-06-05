@@ -16,6 +16,7 @@ public class UploadTask {
   private boolean binaryUpload;
   private String tag;
   private boolean allowCellular;
+  private int progressDivision;
 
   public UploadTask(
       String url,
@@ -27,7 +28,8 @@ public class UploadTask {
       int requestTimeoutInSeconds,
       boolean binaryUpload,
       String tag,
-      boolean allowCellular) {
+      boolean allowCellular,
+      int progressDivision) {
     this.url = url;
     this.method = method;
     this.files = files;
@@ -38,6 +40,7 @@ public class UploadTask {
     this.binaryUpload = binaryUpload;
     this.tag = tag;
     this.allowCellular = allowCellular;
+    this.progressDivision = progressDivision;
   }
 
   public String getURL() {
@@ -82,5 +85,9 @@ public class UploadTask {
 
   public boolean isAllowCellular() {
     return allowCellular;
+  }
+
+  public int getProgressDivision() {
+    return progressDivision;
   }
 }

@@ -109,6 +109,7 @@ class FlutterUploader {
         'data': upload.data,
         'tag': upload.tag,
         'allowCellular': upload.allowCellular,
+        'progressDivision' : upload.progressDivision,
       }))!;
     }
     if (upload is RawUpload) {
@@ -119,6 +120,7 @@ class FlutterUploader {
         'headers': upload.headers,
         'tag': upload.tag,
         'allowCellular': upload.allowCellular,
+        'progressDivision' : upload.progressDivision,
       }))!;
     }
 

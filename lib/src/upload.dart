@@ -11,6 +11,7 @@ abstract class Upload {
     this.contentType,
     this.tag,
     this.allowCellular = true,
+    this.progressDivision
   });
 
   /// Upload link
@@ -31,6 +32,9 @@ abstract class Upload {
   /// If uploads are allowed to use cellular connections
   /// Defaults to true. If false, uploads will only use wifi connections
   final bool allowCellular;
+
+  /// Must be from 1 to 100
+  final int? progressDivision;
 }
 
 /// Standard RFC 2388 multipart/form-data upload.
@@ -47,7 +51,9 @@ class MultipartFormDataUpload extends Upload {
     this.files,
     this.data,
     bool allowCellular = true,
+    int? progressDivision,
   })  : assert(files != null || data != null),
+        assert(progressDivision == null || (progressDivision > 0 && progressDivision <= 100)),
         super(
           url: url,
           method: method,
@@ -55,6 +61,7 @@ class MultipartFormDataUpload extends Upload {
           contentType: contentType,
           tag: tag,
           allowCellular: allowCellular,
+          progressDivision: progressDivision
         ) {
     // Need to specify either files or data.
     assert(files!.isNotEmpty || data!.isNotEmpty);
@@ -77,12 +84,15 @@ class RawUpload extends Upload {
     String? tag,
     this.path,
     bool allowCellular = true,
-  }) : super(
+    int? progressDivision,
+  }) :  assert(progressDivision == null || (progressDivision > 0 && progressDivision <= 100)),
+        super(
           url: url,
           method: method,
           headers: headers,
           tag: tag,
           allowCellular: allowCellular,
+          progressDivision: progressDivision
         );
 
   /// single file to upload
