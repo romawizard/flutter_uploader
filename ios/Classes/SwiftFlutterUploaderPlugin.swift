@@ -104,6 +104,7 @@ public class SwiftFlutterUploaderPlugin: NSObject, FlutterPlugin {
 
         let headers = args["headers"] as? [String: Any?]
         let tag = args["tag"] as? String
+        let dataContentType = args["dataContentType"] as? String
         let data = args["data"] as? [String: Any?]
 
         let httpMethod = method.uppercased()
@@ -135,6 +136,7 @@ public class SwiftFlutterUploaderPlugin: NSObject, FlutterPlugin {
             headers: headers,
             parameters: data,
             tag: tag,
+            dataContentType: dataContentType,
             allowCellular: allowCellular,
             completion: { (task, error) in
                 if error != nil {
@@ -236,6 +238,7 @@ public class SwiftFlutterUploaderPlugin: NSObject, FlutterPlugin {
         headers: [String: Any?]?,
         parameters data: [String: Any?]?,
         tag: String?,
+        dataContentType: String?,
         allowCellular: Bool,
         completion completionHandler:@escaping (URLSessionUploadTask?, FlutterError?) -> Void) {
         var flutterError: FlutterError?
@@ -247,7 +250,11 @@ public class SwiftFlutterUploaderPlugin: NSObject, FlutterPlugin {
         if data != nil {
             data?.forEach({ (key, value) in
                 if let value = value as? String {
+                if(dataContentType != nil){
+                    formData.append(value.data(using: .utf8)!, withName: key, fileName: nil, mimeType: dataContentType!)
+                } else{
                     formData.append(value.data(using: .utf8)!, withName: key)
+                  }
                 }
             })
         }
